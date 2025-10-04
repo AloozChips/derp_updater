@@ -95,10 +95,13 @@ public class UpdaterController {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Intent intent = new Intent();
-            intent.setAction(ACTION_UPDATE_STATUS);
-            intent.putExtra(EXTRA_DOWNLOAD_ID, downloadId);
-            mBroadcastManager.sendBroadcast(intent);
+            // Only send broadcast if the update still exists
+            if (mDownloads.containsKey(downloadId)) {
+                Intent intent = new Intent();
+                intent.setAction(ACTION_UPDATE_STATUS);
+                intent.putExtra(EXTRA_DOWNLOAD_ID, downloadId);
+                mBroadcastManager.sendBroadcast(intent);
+            }
         }).start();
     }
 
@@ -110,17 +113,23 @@ public class UpdaterController {
     }
 
     void notifyDownloadProgress(String downloadId) {
-        Intent intent = new Intent();
-        intent.setAction(ACTION_DOWNLOAD_PROGRESS);
-        intent.putExtra(EXTRA_DOWNLOAD_ID, downloadId);
-        mBroadcastManager.sendBroadcast(intent);
+        // Only send broadcast if the update still exists
+        if (mDownloads.containsKey(downloadId)) {
+            Intent intent = new Intent();
+            intent.setAction(ACTION_DOWNLOAD_PROGRESS);
+            intent.putExtra(EXTRA_DOWNLOAD_ID, downloadId);
+            mBroadcastManager.sendBroadcast(intent);
+        }
     }
 
     void notifyInstallProgress(String downloadId) {
-        Intent intent = new Intent();
-        intent.setAction(ACTION_INSTALL_PROGRESS);
-        intent.putExtra(EXTRA_DOWNLOAD_ID, downloadId);
-        mBroadcastManager.sendBroadcast(intent);
+        // Only send broadcast if the update still exists
+        if (mDownloads.containsKey(downloadId)) {
+            Intent intent = new Intent();
+            intent.setAction(ACTION_INSTALL_PROGRESS);
+            intent.putExtra(EXTRA_DOWNLOAD_ID, downloadId);
+            mBroadcastManager.sendBroadcast(intent);
+        }
     }
 
     private void tryReleaseWakelock() {
